@@ -10,11 +10,26 @@ export default function PortfolioScreen() {
         return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(value / 10000);
     };
 
+    const getTotalInvestedAmount = () => {
+        return positions.reduce((acc, position) => {
+            return acc + position.estimated_price_total;
+        }, 0);
+    };
+
+    const getChangeInPercentage = (oldNumber, newNumber) => {
+        let difference = oldNumber - newNumber;
+    
+        return (difference / oldNumber) * 100;
+    }
+
     return (
         <View style={styles.container}>
-            {!!account && (
+            {!!account && !!(positions.length > 0) && (
                 <View>
-                    <Text>
+                    <Text style={styles.title}>
+                        {getFormattedAmount(getTotalInvestedAmount())}
+                    </Text>
+                    <Text style={{ marginTop: 5 }}>
                         Hallo {account.firstname}, dir bleiben heute {getFormattedAmount(account.cash_to_invest)} für geistreiche Investionen! 💎🤲
                     </Text>
                 </View>
@@ -24,7 +39,13 @@ export default function PortfolioScreen() {
                 <Text style={styles.title}>Positionen</Text>
                 {positions.map(position => (
                     <View style={styles.item} key={position.isin}>
-                        <Text>{position.isin_title}</Text>
+                        <View style={{ flex: 1 }}>
+                            <Text>{position.isin_title}</Text>
+                            <Text>{position.quantity}x {getFormattedAmount(position.estimated_price)}</Text>
+                        </View>
+                        <View style={{ flex: 1, justifyContent: "center", alignItems: "flex-end" }}>
+                            <Text>{getChangeInPercentage(position.buy_price_avg, position.estimated_price).toFixed(2)} %</Text>
+                        </View>
                     </View>
                 ))}
             </View>
@@ -44,8 +65,10 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     item: {
-        paddingTop: 5,
-        paddingBottom: 5
+        flex: 1,
+        flexDirection: "row",
+        paddingTop: 10,
+        paddingBottom: 10
     }
 });
   
