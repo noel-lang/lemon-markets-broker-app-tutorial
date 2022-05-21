@@ -38,7 +38,7 @@ const HomeStackScreen = () => {
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen name="Mein Portfolio" component={PortfolioScreen} />
-      <HomeStack.Screen name="HomeDetail" component={DetailScreen} />
+      <HomeStack.Screen name="Detail" component={DetailScreen} />
     </HomeStack.Navigator>
   );
 };
@@ -47,7 +47,7 @@ const SearchStackScreen = () => {
   return (
     <SearchStack.Navigator>
       <SearchStack.Screen name="Suche" component={SearchScreen} />
-      <SearchStack.Screen name="SearchDetail" component={DetailScreen} />
+      <SearchStack.Screen name="Detail" component={DetailScreen} />
     </SearchStack.Navigator>
   );
 };
