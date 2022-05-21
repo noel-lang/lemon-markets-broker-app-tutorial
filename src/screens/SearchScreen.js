@@ -1,7 +1,7 @@
-import { ScrollView, View, Text, FlatList, TextInput, StyleSheet } from "react-native";
+import { ScrollView, View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity } from "react-native";
 import useSearch from "../hooks/useSearch";
 
-export default function SearchScreen() {
+export default function SearchScreen({ navigation }) {
     const [debouncedQuery, query, setQuery, onChange, searchResults ] = useSearch();
 
     return (
@@ -14,12 +14,14 @@ export default function SearchScreen() {
                 }}
             />
             <FlatList data={searchResults} renderItem={({ item }) => (
-                <View key={item.isin}>
-                    <Text>{item.title}</Text>
-                    <Text>{item.isin}</Text>
-                    <Text>{item.type}</Text>
-                    <Text>{item.venues.map(venue => <Text>{venue.name}</Text>)}</Text>
-                </View>
+                <TouchableOpacity key={item.isin} onPress={() => navigation.navigate("Detail")}>
+                    <View>
+                        <Text>{item.title}</Text>
+                        <Text>{item.isin}</Text>
+                        <Text>{item.type}</Text>
+                        <Text>{item.venues.map(venue => <Text>{venue.name}</Text>)}</Text>
+                    </View>
+                </TouchableOpacity>
             )} />
         </ScrollView>
     );
