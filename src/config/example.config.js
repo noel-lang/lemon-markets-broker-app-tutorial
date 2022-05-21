@@ -1,4 +1,4 @@
 export default {
     API_KEY: "###",
-    ENDPOINT: "https://paper-trading.lemon.markets/v1"
+    BASE_URL: "https://paper-trading.lemon.markets/v1"
 };
