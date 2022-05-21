@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
 import useAccount from "../hooks/useAccount";
 import usePositions from "../hooks/usePositions";
 
-export default function PortfolioScreen() {
+export default function PortfolioScreen({ navigation }) {
     const [account, loading] = useAccount();
     const [positions] = usePositions();
     
@@ -23,7 +23,7 @@ export default function PortfolioScreen() {
     }
 
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}>
             {!!account && !!(positions.length > 0) && (
                 <View>
                     <Text style={styles.title}>
@@ -38,7 +38,8 @@ export default function PortfolioScreen() {
             <View style={styles.positions}>
                 <Text style={styles.title}>Positionen</Text>
                 {positions.map(position => (
-                    <View style={styles.item} key={position.isin}>
+                    <TouchableOpacity key={position.isin} onPress={() => navigation.navigate("Detail")}>
+                        <View style={styles.item}>
                         <View style={{ flex: 1 }}>
                             <Text>{position.isin_title}</Text>
                             <Text>{position.quantity}x {getFormattedAmount(position.estimated_price)}</Text>
@@ -47,9 +48,10 @@ export default function PortfolioScreen() {
                             <Text>{getChangeInPercentage(position.buy_price_avg, position.estimated_price).toFixed(2)} %</Text>
                         </View>
                     </View>
+                    </TouchableOpacity>
                 ))}
             </View>
-        </View>
+        </ScrollView>
     );
 }
 
