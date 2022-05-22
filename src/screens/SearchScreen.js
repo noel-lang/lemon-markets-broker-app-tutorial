@@ -14,7 +14,7 @@ export default function SearchScreen({ navigation }) {
                 }}
             />
             <FlatList data={searchResults} renderItem={({ item }) => (
-                <TouchableOpacity key={item.isin} onPress={() => navigation.navigate("Detail")}>
+                <TouchableOpacity key={item.isin} onPress={() => navigation.navigate("Detail", { isin: item.isin })}>
                     <View>
                         <Text>{item.title}</Text>
                         <Text>{item.isin}</Text>

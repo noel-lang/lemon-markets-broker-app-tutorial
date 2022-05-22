@@ -14,8 +14,6 @@ export default function DetailScreen({ route, navigation }) {
         return null;
     }
 
-    console.log(position);
-
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title}>{instrument.name}</Text>
