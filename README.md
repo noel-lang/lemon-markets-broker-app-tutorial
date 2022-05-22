@@ -10,3 +10,4 @@
 
 4. Install React Native SVG
 `expo install react-native-svg`
+`yarn add react-native-svg-charts`
