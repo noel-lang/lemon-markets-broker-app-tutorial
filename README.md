@@ -7,3 +7,6 @@
 
 3. Install Tab Navigator
 `npm install @react-navigation/bottom-tabs`
+
+4. Install React Native SVG
+`expo install react-native-svg`
