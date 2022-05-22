@@ -28,9 +28,12 @@ export default function DetailScreen({ route, navigation }) {
                 <View>
                     <Text>Durchschn. Einkaufspreis: {getFormattedAmount(position.buy_price_avg)}</Text>
                     <Text>Aktueller Preis: {getFormattedAmount(position.estimated_price)}</Text>
-                    <Text>Profit/Verlust: {getFormattedAmount(position.buy_price_avg - position.estimated_price)} ({getChangeInPercentage(position.buy_price_avg, position.estimated_price).toFixed(2)}%)</Text>
+                    <Text>Performance: {getFormattedAmount(position.buy_price_avg - position.estimated_price)} ({getChangeInPercentage(position.buy_price_avg, position.estimated_price).toFixed(2)}%)</Text>
                 </View>
             )}
+            <View style={styles.button}>
+                <Text style={styles.buttonText}>Kaufen</Text>
+            </View>
         </ScrollView>
     );
 }
@@ -51,5 +54,18 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         paddingTop: 10,
         paddingBottom: 10
+    },
+    button: {
+        backgroundColor: "#1e293b",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        marginTop: 20
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 16,
+        flex: 1,
+        alignSelf: "center"
     }
 });
