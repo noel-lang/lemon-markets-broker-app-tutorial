@@ -38,7 +38,7 @@ export default function PortfolioScreen({ navigation }) {
             <View style={styles.positions}>
                 <Text style={styles.title}>Positionen</Text>
                 {positions.map(position => (
-                    <TouchableOpacity key={position.isin} onPress={() => navigation.navigate("Detail", { isin: position.isin })}>
+                    <TouchableOpacity key={position.isin} onPress={() => navigation.navigate("Detail", { isin: position.isin, position })}>
                         <View style={styles.item}>
                         <View style={{ flex: 1 }}>
                             <Text>{position.isin_title}</Text>
