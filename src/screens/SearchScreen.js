@@ -4,6 +4,19 @@ import useSearch from "../hooks/useSearch";
 export default function SearchScreen({ navigation }) {
     const [debouncedQuery, query, setQuery, onChange, searchResults ] = useSearch();
 
+    // const filteredList = searchResults.filter(item => item.type === "stock");
+
+    const mapItemType = (type) => {
+        const types = {
+            "stock": "Aktie",
+            "bond": "Anleihe",
+            "etf": "ETF",
+            "fund": "Fonds"
+        };
+
+        return types[type] ?? type;
+    };
+
     return (
         <ScrollView style={styles.container}>
             <TextInput
@@ -13,12 +26,12 @@ export default function SearchScreen({ navigation }) {
                     onChange(text);
                 }}
             />
-            <FlatList data={searchResults} renderItem={({ item }) => (
-                <TouchableOpacity key={item.isin} onPress={() => navigation.navigate("Detail", { isin: item.isin })}>
+            <FlatList style={styles.list} data={searchResults} renderItem={({ item }) => (
+                <TouchableOpacity style={styles.item} key={item.isin} onPress={() => navigation.navigate("Detail", { isin: item.isin })}>
                     <View>
                         <Text>{item.title}</Text>
                         <Text>{item.isin}</Text>
-                        <Text>{item.type}</Text>
+                        <Text>{mapItemType(item.type)}</Text>
                         <Text>{item.venues.map(venue => <Text>{venue.name}</Text>)}</Text>
                     </View>
                 </TouchableOpacity>
@@ -36,5 +49,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 10,
         borderRadius: 5
+    },
+    list: {
+        marginTop: 20,
+    },
+    item: {
+        marginBottom: 10
     }
 })

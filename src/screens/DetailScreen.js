@@ -1,34 +1,65 @@
+import { useEffect, useState } from "react";
 import { ScrollView, View, Text, StyleSheet } from "react-native";
-import { LineChart } from 'react-native-svg-charts';
+import { LineChart, XAxis } from 'react-native-svg-charts';
 import useFormattedNumbers from "../hooks/useFormattedNumbers";
-import useInstrument from "../hooks/useInstrument";
-import usePriceData from "../hooks/usePriceData";
+import useLemonMarkets from "../hooks/useLemonMarkets";
 
 export default function DetailScreen({ route, navigation }) {
     const { isin, position } = route.params;
-    const [priceData] = usePriceData(isin);
-    const [instrument] = useInstrument(isin);
-    const [getFormattedAmount, getChangeInPercentage] = useFormattedNumbers();
+    const { getPriceData, getInstrumentData, getQuoteData } = useLemonMarkets();
 
-    if (instrument === undefined || priceData === undefined) {
+    const [priceData, setPriceData] = useState([]);
+    const [instrument, setInstrument] = useState(undefined);
+    const [quotesData, setQuotesData] = useState([]);
+
+    useEffect(async () => {
+        const prices = await getPriceData(isin);
+        setPriceData(prices);
+
+        const instruments = await getInstrumentData(isin);
+        setInstrument(instruments);
+
+        const quotes = await getQuoteData(isin);
+        setQuotesData(quotes);
+    }, []);
+
+    const { getFormattedAmount, getChangeInPercentage, getFormattedAmountWithDivision } = useFormattedNumbers();
+
+    if (instrument === undefined || priceData === undefined || quotesData === undefined) {
         return null;
     }
+
+    // const dateFormatter = new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit" });
+
+    /* const xAxisData = priceData.map(item => {
+        // return dayFormat.format(new Date(item.t));
+        return new Date(item.t);
+    }); */
 
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title}>{instrument.name}</Text>
             <Text>Symbol: {instrument.symbol} - ISIN: {isin}</Text>
-            <LineChart
-                style={{ height: 200 }}
-                data={priceData.map(item => item.c)}
-                svg={{ stroke: 'rgb(134, 65, 244)' }}
-                contentInset={{ top: 20, bottom: 20 }}
-            />
+            <View style={{ height: 200, padding: 20 }}>
+                <LineChart
+                    style={{ flex: 1 }}
+                    data={priceData.map(item => item.c)}
+                    svg={{ stroke: 'rgb(134, 65, 244)' }}
+                    contentInset={{ top: 10, bottom: 10 }}
+                />
+            </View>
             {position !== undefined && (
                 <View>
-                    <Text>Durchschn. Einkaufspreis: {getFormattedAmount(position.buy_price_avg)}</Text>
-                    <Text>Aktueller Preis: {getFormattedAmount(position.estimated_price)}</Text>
-                    <Text>Performance: {getFormattedAmount(position.buy_price_avg - position.estimated_price)} ({getChangeInPercentage(position.buy_price_avg, position.estimated_price).toFixed(2)}%)</Text>
+                    <Text>Durchschn. Einkaufspreis: {getFormattedAmountWithDivision(position.buy_price_avg)}</Text>
+                    <Text>Aktueller Preis: {getFormattedAmountWithDivision(position.estimated_price)}</Text>
+                    <Text>Performance: {getFormattedAmountWithDivision(position.buy_price_avg - position.estimated_price)} ({getChangeInPercentage(position.buy_price_avg, position.estimated_price).toFixed(2)}%)</Text>
+                </View>
+            )}
+            {!!quotesData && quotesData[0] !== undefined && (
+                <View>
+                    <Text>Angebotspreis: {getFormattedAmount(quotesData[0].b)}</Text>
+                    <Text>Verkaufspreis: {getFormattedAmount(quotesData[0].a)}</Text>
+                    <Text>Börse: {quotesData[0].mic}</Text>
                 </View>
             )}
             <View style={styles.button}>
