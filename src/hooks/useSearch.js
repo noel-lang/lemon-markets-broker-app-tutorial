@@ -16,6 +16,11 @@ export default function useSearch() {
     ), [query]);
 
     const search = (value) => {
+        if (value === "") {
+            setSearchResults([]);
+            return;
+        }
+
         setLoading(true);
 
         fetch(`https://data.lemon.markets/v1/instruments/?search=${value}`, {
