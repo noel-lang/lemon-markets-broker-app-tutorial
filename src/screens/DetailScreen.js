@@ -1,23 +1,25 @@
 import { useEffect, useState } from "react";
-import { ScrollView, View, Text, StyleSheet } from "react-native";
+import { ScrollView, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { LineChart, XAxis } from 'react-native-svg-charts';
 import useFormattedNumbers from "../hooks/useFormattedNumbers";
 import useLemonMarkets from "../hooks/useLemonMarkets";
 
 export default function DetailScreen({ route, navigation }) {
     const { isin, position } = route.params;
-    const { getPriceData, getInstrumentData, getQuoteData } = useLemonMarkets();
+    const { getPriceData, getInstrumentData, getQuoteData, placeOrder } = useLemonMarkets();
 
     const [priceData, setPriceData] = useState([]);
     const [instrument, setInstrument] = useState(undefined);
     const [quotesData, setQuotesData] = useState([]);
+
+    const [processing, setProcessing] = useState(false);
 
     useEffect(async () => {
         const prices = await getPriceData(isin);
         setPriceData(prices);
 
         const instruments = await getInstrumentData(isin);
-        setInstrument(instruments);
+        setInstrument(instruments[0]);
 
         const quotes = await getQuoteData(isin);
         setQuotesData(quotes);
@@ -25,21 +27,24 @@ export default function DetailScreen({ route, navigation }) {
 
     const { getFormattedAmount, getChangeInPercentage, getFormattedAmountWithDivision } = useFormattedNumbers();
 
-    if (instrument === undefined || priceData === undefined || quotesData === undefined) {
+    const buy = async () => {
+        setProcessing(true);
+        const response = await placeOrder(isin, 5, "allday");
+        setProcessing(false);
+
+        console.log(response);
+    };
+
+    if (position === undefined || instrument === undefined || priceData === undefined || quotesData === undefined) {
         return null;
     }
-
-    // const dateFormatter = new Intl.DateTimeFormat("de-DE", { day: "2-digit", month: "2-digit", year: "2-digit" });
-
-    /* const xAxisData = priceData.map(item => {
-        // return dayFormat.format(new Date(item.t));
-        return new Date(item.t);
-    }); */
 
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title}>{instrument.name}</Text>
+            
             <Text>Symbol: {instrument.symbol} - ISIN: {isin}</Text>
+
             <View style={{ height: 200, padding: 20 }}>
                 <LineChart
                     style={{ flex: 1 }}
@@ -48,23 +53,32 @@ export default function DetailScreen({ route, navigation }) {
                     contentInset={{ top: 10, bottom: 10 }}
                 />
             </View>
-            {position !== undefined && (
-                <View>
-                    <Text>Durchschn. Einkaufspreis: {getFormattedAmountWithDivision(position.buy_price_avg)}</Text>
-                    <Text>Aktueller Preis: {getFormattedAmountWithDivision(position.estimated_price)}</Text>
-                    <Text>Performance: {getFormattedAmountWithDivision(position.buy_price_avg - position.estimated_price)} ({getChangeInPercentage(position.buy_price_avg, position.estimated_price).toFixed(2)}%)</Text>
-                </View>
-            )}
-            {!!quotesData && quotesData[0] !== undefined && (
-                <View>
-                    <Text>Angebotspreis: {getFormattedAmount(quotesData[0].b)}</Text>
-                    <Text>Verkaufspreis: {getFormattedAmount(quotesData[0].a)}</Text>
-                    <Text>Börse: {quotesData[0].mic}</Text>
-                </View>
-            )}
-            <View style={styles.button}>
-                <Text style={styles.buttonText}>Kaufen</Text>
+
+            <View style={styles.box}>
+                <Text style={styles.subTitle}>Gesamt</Text>
+                <Text>{getFormattedAmountWithDivision(position.estimated_price_total)}</Text>
             </View>
+            
+            <View style={styles.box}>
+                <Text style={styles.subTitle}>Anzahl</Text>
+                <Text>{position.quantity}</Text>
+            </View>
+            
+            <View style={styles.box}>
+                <Text style={styles.subTitle}>Performance</Text>
+                <Text>{getChangeInPercentage(position.buy_price_avg, position.estimated_price).toFixed(2)}%</Text>
+            </View>
+
+            <View style={styles.box}>
+                <Text style={styles.subTitle}>Buy In</Text>
+                <Text>{getFormattedAmountWithDivision(position.buy_price_avg)}</Text>
+            </View>
+
+            <TouchableOpacity onPress={buy} disabled={processing}>
+                <View style={styles.button}>
+                    <Text style={styles.buttonText}>{processing ? "Kaufe..." : "Kaufen"}</Text>
+                </View>
+            </TouchableOpacity>
         </ScrollView>
     );
 }
@@ -76,6 +90,14 @@ const styles = StyleSheet.create({
     title: {
         fontWeight: "bold",
         fontSize: 24
+    },
+    subTitle: {
+        fontWeight: "bold",
+        fontSize: 18
+    },
+    box: {
+        paddingTop: 5,
+        paddingBottom: 5
     },
     positions: {
         marginTop: 20

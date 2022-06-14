@@ -1,3 +1,4 @@
+import { format, addDays } from "date-fns";
 import config from "../config/config";
 
 export default function useLemonMarkets() {
@@ -11,22 +12,47 @@ export default function useLemonMarkets() {
     };
 
     const getPriceData = async (isin) => {
-        return request(`/ohlc/d1/?isin=${isin}&from=2022-05-01`, config.MARKET_API_URL);
+        return request(`/ohlc/d1/?isin=${isin}&from=2022-05-01`, { baseUrl: config.MARKET_API_URL });
     };
 
     const getQuoteData = async (isin) => {
-        return request(`/quotes/latest/?isin=${isin}`, config.MARKET_API_URL);
+        return request(`/quotes/latest/?isin=${isin}`, { baseUrl: config.MARKET_API_URL });
     };
 
     const getInstrumentData = async (isin) => {
-        return request(`/instruments/?isin=${isin}`, config.MARKET_API_URL)
+        return request(`/instruments/?isin=${isin}`, { baseUrl: config.MARKET_API_URL })
     };
 
-    const request = async (path, baseUrl = config.BASE_URL) => {
+    const placeOrder = async (isin, quantity, venue) => {
+        const oneMonthFromNowFormatted = format(addDays(new Date(), 14), "yyyy-MM-dd");
+
+        return request(`/orders`, {
+            method: "POST",
+            body: JSON.stringify({
+                isin,
+                quantity,
+                venue,
+                "expires_at": oneMonthFromNowFormatted,
+                "side": "buy",
+            })
+        });
+    };
+
+    const request = async (path, settings) => {
+        const fetchConfiguration = Object.assign({
+            baseUrl: config.BASE_URL,
+            method: "GET",
+        }, settings);
+
+        console.log(fetchConfiguration);
+
         return new Promise((resolve, reject) => {
-            fetch(`${baseUrl}${path}`, {
+            fetch(`${fetchConfiguration.baseUrl}${path}`, {
+                method: fetchConfiguration.method,
+                body: fetchConfiguration?.body ?? undefined,
                 headers: {
-                    "Authorization": `Bearer ${config.API_KEY}`
+                    "Authorization": `Bearer ${config.API_KEY}`,
+                    "Content-Type": "application/json"
                 }
             })
             .then(response => response.json())
@@ -35,5 +61,5 @@ export default function useLemonMarkets() {
         });
     };
 
-    return { getAccountData, getPositionData, getPriceData, getQuoteData, getInstrumentData };
+    return { getAccountData, getPositionData, getPriceData, getQuoteData, getInstrumentData, placeOrder };
 }

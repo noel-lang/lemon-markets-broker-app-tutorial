@@ -14,3 +14,6 @@
 
 5. Generate Client from OpenAPI Spec
 `npx @openapitools/openapi-generator-cli generate -i https://paper-trading.lemon.markets/v1/openapi.json -g typescript-fetch -o src/clients/trading-api --skip-validate-spec`
+
+6. Date Library
+`npm install --save date-fns`

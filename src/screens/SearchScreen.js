@@ -2,9 +2,7 @@ import { ScrollView, View, Text, FlatList, TextInput, StyleSheet, TouchableOpaci
 import useSearch from "../hooks/useSearch";
 
 export default function SearchScreen({ navigation }) {
-    const [debouncedQuery, query, setQuery, onChange, searchResults ] = useSearch();
-
-    // const filteredList = searchResults.filter(item => item.type === "stock");
+    const [onChange, searchResults] = useSearch();
 
     const mapItemType = (type) => {
         const types = {

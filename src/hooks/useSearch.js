@@ -5,7 +5,6 @@ import config from "../config/config";
 export default function useSearch() {
     const [loading, setLoading] = useState(null);
     const [query, setQuery] = useState("");
-    const [debouncedQuery, setDebouncedQuery] = useState("");
     const [searchResults, setSearchResults] = useState([]);
 
     const onChange = useCallback(debounce(
@@ -35,5 +34,5 @@ export default function useSearch() {
         .finally(() => setLoading(false))
     };
 
-    return [ debouncedQuery, query, setQuery, onChange, searchResults, loading ];
+    return [ onChange, searchResults ];
 }
