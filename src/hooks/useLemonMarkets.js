@@ -44,8 +44,6 @@ export default function useLemonMarkets() {
             method: "GET",
         }, settings);
 
-        console.log(fetchConfiguration);
-
         return new Promise((resolve, reject) => {
             fetch(`${fetchConfiguration.baseUrl}${path}`, {
                 method: fetchConfiguration.method,
