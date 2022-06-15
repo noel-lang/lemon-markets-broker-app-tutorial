@@ -31,18 +31,16 @@ export default function DetailScreen({ route, navigation }) {
         setProcessing(true);
         const response = await placeOrder(isin, 5, "allday");
         setProcessing(false);
-
-        console.log(response);
     };
 
-    if (position === undefined || instrument === undefined || priceData === undefined || quotesData === undefined) {
+    if (instrument === undefined || priceData === undefined || quotesData === undefined) {
         return null;
     }
 
     return (
         <ScrollView style={styles.container}>
             <Text style={styles.title}>{instrument.name}</Text>
-            
+
             <Text>Symbol: {instrument.symbol} - ISIN: {isin}</Text>
 
             <View style={{ height: 200, padding: 20 }}>
@@ -54,25 +52,29 @@ export default function DetailScreen({ route, navigation }) {
                 />
             </View>
 
-            <View style={styles.box}>
-                <Text style={styles.subTitle}>Gesamt</Text>
-                <Text>{getFormattedAmountWithDivision(position.estimated_price_total)}</Text>
-            </View>
-            
-            <View style={styles.box}>
-                <Text style={styles.subTitle}>Anzahl</Text>
-                <Text>{position.quantity}</Text>
-            </View>
-            
-            <View style={styles.box}>
-                <Text style={styles.subTitle}>Performance</Text>
-                <Text>{getChangeInPercentage(position.buy_price_avg, position.estimated_price).toFixed(2)}%</Text>
-            </View>
+            {!!position && (
+                <>
+                    <View style={styles.box}>
+                        <Text style={styles.subTitle}>Gesamt</Text>
+                        <Text>{getFormattedAmountWithDivision(position.estimated_price_total)}</Text>
+                    </View>
+                    
+                    <View style={styles.box}>
+                        <Text style={styles.subTitle}>Anzahl</Text>
+                        <Text>{position.quantity}</Text>
+                    </View>
+                    
+                    <View style={styles.box}>
+                        <Text style={styles.subTitle}>Performance</Text>
+                        <Text>{getChangeInPercentage(position.buy_price_avg, position.estimated_price).toFixed(2)}%</Text>
+                    </View>
 
-            <View style={styles.box}>
-                <Text style={styles.subTitle}>Buy In</Text>
-                <Text>{getFormattedAmountWithDivision(position.buy_price_avg)}</Text>
-            </View>
+                    <View style={styles.box}>
+                        <Text style={styles.subTitle}>Buy In</Text>
+                        <Text>{getFormattedAmountWithDivision(position.buy_price_avg)}</Text>
+                    </View>
+                </>
+            )}
 
             <TouchableOpacity onPress={buy} disabled={processing}>
                 <View style={styles.button}>

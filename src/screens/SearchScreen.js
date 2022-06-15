@@ -30,7 +30,7 @@ export default function SearchScreen({ navigation }) {
                         <Text>{item.title}</Text>
                         <Text>{item.isin}</Text>
                         <Text>{mapItemType(item.type)}</Text>
-                        <Text>{item.venues.map(venue => <Text>{venue.name}</Text>)}</Text>
+                        <Text>{item.venues.map(venue => <Text key={venue.name}>{venue.name}</Text>)}</Text>
                     </View>
                 </TouchableOpacity>
             )} />
