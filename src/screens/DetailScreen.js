@@ -73,6 +73,11 @@ export default function DetailScreen({ route, navigation }) {
                         <Text style={styles.subTitle}>Buy In</Text>
                         <Text>{getFormattedAmountWithDivision(position.buy_price_avg)}</Text>
                     </View>
+
+                    <View style={styles.box}>
+                        <Text style={styles.subTitle}>Aktueller Preis</Text>
+                        <Text>{getFormattedAmountWithDivision(position.estimated_price)}</Text>
+                    </View>
                 </>
             )}
 

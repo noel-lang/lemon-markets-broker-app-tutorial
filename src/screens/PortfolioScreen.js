@@ -24,6 +24,16 @@ export default function PortfolioScreen({ navigation }) {
         }, 0);
     };
 
+    const getStylesForPerformance = (value) => {
+        if (value > 0) {
+            return { text: "#10b981", background: "#047857" };
+        } else if (value < 0) {
+            return { text: "#dc2626", background: "#991b1b" };
+        } else {
+            return { text: "#64748b", background: "#334155" };
+        }
+    }
+
     return (
         <ScrollView style={styles.container}>
             {!!account && !!(positions.length > 0) && (
@@ -31,7 +41,7 @@ export default function PortfolioScreen({ navigation }) {
                     <Text style={styles.title}>
                         {getFormattedAmountWithDivision(getTotalInvestedAmount())}
                     </Text>
-                    <Text style={{ marginTop: 5 }}>
+                    <Text style={{ marginTop: 5, color: "white" }}>
                         Hallo {account.firstname}, dir bleiben heute {getFormattedAmountWithDivision(account.cash_to_invest)} für geistreiche Investionen! 💎🤲
                     </Text>
                 </View>
@@ -39,19 +49,26 @@ export default function PortfolioScreen({ navigation }) {
 
             <View style={styles.positions}>
                 <Text style={styles.title}>Positionen</Text>
-                {positions.map(position => (
-                    <TouchableOpacity key={position.isin} onPress={() => navigation.navigate("Detail", { isin: position.isin, position })}>
-                        <View style={styles.item}>
-                        <View style={{ flex: 1 }}>
-                            <Text>{position.isin_title}</Text>
-                            <Text>{position.quantity}x {getFormattedAmountWithDivision(position.estimated_price)}</Text>
+                {positions.map(position => {
+                    const changeInPercentage = getChangeInPercentage(position.buy_price_avg, position.estimated_price);
+                    const itemStyles = getStylesForPerformance(changeInPercentage);
+
+                    return  (
+                        <TouchableOpacity key={position.isin} onPress={() => navigation.navigate("Detail", { isin: position.isin, position })}>
+                            <View style={styles.item}>
+                            <View style={{ flex: 1 }}>
+                                <Text style={{ color: "white" }}>{position.isin_title}</Text>
+                                <Text style={{ color: "white" }}>{position.quantity}x {getFormattedAmountWithDivision(position.estimated_price)}</Text>
+                            </View>
+                            <View style={{ flex: 1, justifyContent: "center", alignItems: "flex-end" }}>
+                                <View style={{ backgroundColor: itemStyles.background, padding: 5, borderRadius: 5 }}>
+                                    <Text style={{ color: itemStyles.text }}>{changeInPercentage.toFixed(2)} %</Text>
+                                </View>
+                            </View>
                         </View>
-                        <View style={{ flex: 1, justifyContent: "center", alignItems: "flex-end" }}>
-                            <Text>{getChangeInPercentage(position.buy_price_avg, position.estimated_price).toFixed(2)} %</Text>
-                        </View>
-                    </View>
-                    </TouchableOpacity>
-                ))}
+                        </TouchableOpacity>
+                    )
+                })}
             </View>
         </ScrollView>
     );
@@ -59,11 +76,13 @@ export default function PortfolioScreen({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 20
+        padding: 20,
+        backgroundColor: "#0f172a"
     },
     title: {
         fontWeight: "bold",
-        fontSize: 24
+        fontSize: 24,
+        color: "white"
     },
     positions: {
         marginTop: 20
