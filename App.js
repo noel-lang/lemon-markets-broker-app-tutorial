@@ -20,23 +20,39 @@ export default function App() {
 }
 
 const TabNavigator = () => (
-  <Tab.Navigator screenOptions={{ headerShown: false }}>
+  <Tab.Navigator screenOptions={{
+      headerShown: false,
+      tabBarActiveTintColor: "#059669",
+      tabBarInactiveTintColor: "white",
+      tabBarIconStyle: { color: "white" },
+      tabBarStyle: { backgroundColor: "black", borderTopWidth: 5, borderTopColor: "#059669" },
+    }}
+  >
     <Tab.Screen
       name="Portfolio"
       component={HomeStackScreen}
-      options={{ tabBarIcon: () => <Ionicons name="list-outline" size={24} /> }}
+      options={{ tabBarIcon: ({ color }) => <Ionicons name="list-outline" size={24} color={color} /> }}
       />
     <Tab.Screen
       name="Suche"
       component={SearchStackScreen}
-      options={{ tabBarIcon: () => <Ionicons name="search-outline" size={24} /> }}
+      options={{ tabBarIcon: ({ color }) => <Ionicons name="search-outline" size={24} color={color} /> }}
     />
   </Tab.Navigator>
 );
 
+const defaultScreenOptions = {
+  headerStyle: {
+    backgroundColor: "#0f172a",
+    borderBottomWidth: 5,
+    borderBottomColor : "#059669"
+  },
+  headerTintColor: "white",
+};
+
 const HomeStackScreen = () => {
   return (
-    <HomeStack.Navigator>
+    <HomeStack.Navigator screenOptions={defaultScreenOptions}>
       <HomeStack.Screen name="Mein Portfolio" component={PortfolioScreen} />
       <HomeStack.Screen name="Detail" component={DetailScreen} />
     </HomeStack.Navigator>
@@ -45,7 +61,7 @@ const HomeStackScreen = () => {
 
 const SearchStackScreen = () => {
   return (
-    <SearchStack.Navigator>
+    <SearchStack.Navigator screenOptions={defaultScreenOptions}>
       <SearchStack.Screen name="Suche" component={SearchScreen} />
       <SearchStack.Screen name="Detail" component={DetailScreen} />
     </SearchStack.Navigator>

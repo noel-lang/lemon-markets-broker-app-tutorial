@@ -1,4 +1,4 @@
-import { format, addDays } from "date-fns";
+import { format, addDays, subDays } from "date-fns";
 import config from "../config/config";
 
 export default function useLemonMarkets() {
@@ -11,8 +11,12 @@ export default function useLemonMarkets() {
         return request("/positions");
     };
 
+    const getOrderData = async () => {
+        return request("/orders");
+    };
+
     const getPriceData = async (isin) => {
-        return request(`/ohlc/d1/?isin=${isin}&from=2022-05-01`, { baseUrl: config.MARKET_API_URL });
+        return request(`/ohlc/d1/?isin=${isin}&from=${format(subDays(new Date(), 30), "yyyy-MM-dd")}`, { baseUrl: config.MARKET_API_URL });
     };
 
     const getQuoteData = async (isin) => {
@@ -59,5 +63,5 @@ export default function useLemonMarkets() {
         });
     };
 
-    return { getAccountData, getPositionData, getPriceData, getQuoteData, getInstrumentData, placeOrder };
+    return { getAccountData, getPositionData, getPriceData, getQuoteData, getOrderData, getInstrumentData, placeOrder };
 }

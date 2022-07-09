@@ -1,5 +1,6 @@
-import { ScrollView, View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import { ScrollView, View, Text, FlatList, TextInput, StyleSheet, TouchableOpacity, SafeAreaView } from "react-native";
 import useSearch from "../hooks/useSearch";
+import theme from "../config/theme";
 
 export default function SearchScreen({ navigation }) {
     const [onChange, searchResults] = useSearch();
@@ -16,34 +17,39 @@ export default function SearchScreen({ navigation }) {
     };
 
     return (
-        <ScrollView style={styles.container}>
-            <TextInput
-                style={styles.searchInput}
-                placeholder="Suche nach Aktien, ETFs, Anleihen..."
-                onChangeText={text => {
-                    onChange(text);
-                }}
-            />
-            <FlatList style={styles.list} data={searchResults} renderItem={({ item }) => (
-                <TouchableOpacity style={styles.item} key={item.isin} onPress={() => navigation.navigate("Detail", { isin: item.isin })}>
-                    <View>
-                        <Text>{item.title}</Text>
-                        <Text>{item.isin}</Text>
-                        <Text>{mapItemType(item.type)}</Text>
-                        <Text>{item.venues.map(venue => <Text key={venue.name}>{venue.name}</Text>)}</Text>
-                    </View>
-                </TouchableOpacity>
-            )} />
+        <SafeAreaView style={{ flex: 1 }}>
+            <ScrollView style={styles.container}>
+                <TextInput
+                    style={styles.searchInput}
+                    placeholder="Suche nach Aktien, ETFs, Anleihen..."
+                    placeholderTextColor="#94a3b8"
+                    onChangeText={text => {
+                        onChange(text);
+                    }}
+                />
+                <FlatList style={styles.list} data={searchResults} renderItem={({ item }) => (
+                    <TouchableOpacity style={styles.item} key={item.isin} onPress={() => navigation.navigate("Detail", { isin: item.isin })}>
+                        <View>
+                            <Text style={{ color: "white" }}>{item.title}</Text>
+                            <Text style={{ color: "white" }}>{item.isin}</Text>
+                            <Text style={{ color: "white" }}>{mapItemType(item.type)}</Text>
+                            <Text style={{ color: "white" }}>{item.venues.map(venue => <Text key={venue.name}>{venue.name}</Text>)}</Text>
+                        </View>
+                    </TouchableOpacity>
+                )} />
         </ScrollView>
+        </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         padding: 20,
+        backgroundColor: theme.BACKGROUND
     },
     searchInput: {
-        backgroundColor: "#cbd5e1",
+        backgroundColor: "#334155",
+        color: theme.TEXT,
         paddingHorizontal: 10,
         paddingVertical: 10,
         borderRadius: 5
