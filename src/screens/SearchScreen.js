@@ -37,7 +37,7 @@ export default function SearchScreen({ navigation }) {
                         </View>
                     </TouchableOpacity>
                 )} />
-        </ScrollView>
+            </ScrollView>
         </SafeAreaView>
     );
 }

@@ -28,7 +28,7 @@ export default function useLemonMarkets() {
     };
 
     const placeOrder = async (isin, quantity, venue) => {
-        const oneMonthFromNowFormatted = format(addDays(new Date(), 14), "yyyy-MM-dd");
+        const twoWeeksFromNowFormatted = format(addDays(new Date(), 14), "yyyy-MM-dd");
 
         return request(`/orders`, {
             method: "POST",
@@ -36,7 +36,7 @@ export default function useLemonMarkets() {
                 isin,
                 quantity,
                 venue,
-                "expires_at": oneMonthFromNowFormatted,
+                "expires_at": twoWeeksFromNowFormatted,
                 "side": "buy",
             })
         });

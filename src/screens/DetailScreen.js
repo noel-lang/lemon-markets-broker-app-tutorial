@@ -5,7 +5,7 @@ import useFormattedNumbers from "../hooks/useFormattedNumbers";
 import useLemonMarkets from "../hooks/useLemonMarkets";
 import theme from "../config/theme";
 
-export default function DetailScreen({ route, navigation }) {
+export default function DetailScreen({ route }) {
     const { isin, position } = route.params;
     const { getPriceData, getInstrumentData, getQuoteData, placeOrder } = useLemonMarkets();
 
@@ -28,11 +28,11 @@ export default function DetailScreen({ route, navigation }) {
         })();
     }, []);
 
-    const { getFormattedAmount, getChangeInPercentage, getFormattedAmountWithDivision } = useFormattedNumbers();
+    const { getChangeInPercentage, getFormattedAmountWithDivision } = useFormattedNumbers();
 
     const buy = async () => {
         setProcessing(true);
-        const response = await placeOrder(isin, 5, "allday");
+        await placeOrder(isin, 5, "allday");
         setProcessing(false);
     };
 

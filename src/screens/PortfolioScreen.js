@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, SafeAreaView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, SafeAreaView, Platform } from "react-native";
 import useFormattedNumbers from "../hooks/useFormattedNumbers";
 import useLemonMarkets from "../hooks/useLemonMarkets";
 
@@ -39,11 +39,11 @@ export default function PortfolioScreen({ navigation }) {
 
     const getStylesForPerformance = (value) => {
         if (value > 0) {
-            return { text: "#10b981", background: "#047857" };
+            return { text: "#10b981" };
         } else if (value < 0) {
-            return { text: "#dc2626", background: "#991b1b" };
+            return { text: "#dc2626" };
         } else {
-            return { text: "#64748b", background: "#334155" };
+            return { text: "#64748b" };
         }
     }
 
@@ -104,8 +104,14 @@ export default function PortfolioScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
-        backgroundColor: "black"
+        ...Platform.select({
+            ios: {
+                padding: 20
+            },
+            web: {
+                padding: 10
+            }
+        })
     },
     title: {
         fontWeight: "bold",
@@ -113,7 +119,7 @@ const styles = StyleSheet.create({
         color: "white"
     },
     positions: {
-        marginTop: 20
+        marginTop: 20,
     },
     item: {
         flex: 1,

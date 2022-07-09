@@ -1,5 +1,4 @@
-import { StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DarkTheme } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import PortfolioScreen from './src/screens/PortfolioScreen';
@@ -11,9 +10,16 @@ const Tab = createBottomTabNavigator();
 const HomeStack = createNativeStackNavigator();
 const SearchStack = createNativeStackNavigator();
 
+const themeSettings = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+  },
+};
+
 export default function App() {
   return (
-    <NavigationContainer>
+    <NavigationContainer theme={themeSettings}>
       <TabNavigator />
     </NavigationContainer>
   );
